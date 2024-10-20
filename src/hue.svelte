@@ -1,12 +1,14 @@
 <script>
     import { onMount } from 'svelte';
+    import Canvas from './canvas.svelte';
+    let slider, hue, isDragging = false, pixelData;
+    let sliderPos = 0;
+    let canvasWidth = 640;
+    let canvasHeight = 32;
     onMount(()=>{
-        const canvas = document.getElementById('cy');
-        const c = canvas.getContext('2d');
-        const width = canvas.width;
-        const height = canvas.height;
-
-        const hueGradient = c.createLinearGradient(0, 0, width, 0);
+        const c = hue.getContext('2d');
+        
+        const hueGradient = c.createLinearGradient(0, 0, canvasWidth, 0);
 
         // Add all colors from the hue spectrum
         hueGradient.addColorStop(0, 'rgb(255, 0, 0)');    // Red
@@ -19,25 +21,82 @@
 
         // Draw the gradient on the canvas
         c.fillStyle = hueGradient;
-        c.fillRect(0, 0, width, height);
+        c.fillRect(0, 0, canvasWidth, canvasHeight);
+        const x = Math.floor(sliderPos);
+        const y = Math.floor(canvasHeight / 2);
+        pixelData = c.getImageData(x, y, 1, 1).data;
     });
+
+    document.addEventListener("mouseup", handleMouseUp);
+    document.addEventListener("mousemove", handleMouseMove);
+
+    function handleMouseUp(e){
+        isDragging = false;
+        updatePixelData();
+    };
+
+    function updatePixelData()
+    {
+        const ctx = hue.getContext('2d');
+        const x = Math.floor(sliderPos);
+        const y = Math.floor(canvasHeight / 2);
+        pixelData = ctx.getImageData(x, y, 1, 1).data;
+    }
+
+    function updatesliderLoc(e)
+    {
+        const rectHue = hue.getBoundingClientRect();
+        const rectSlider = slider.getBoundingClientRect();
+        let new_pos = e.clientX - rectHue.left;
+        
+        if(new_pos >= rectHue.left && new_pos <= rectHue.width - rectSlider.width)
+            sliderPos = new_pos;
+        else if (new_pos < rectHue.left)
+            sliderPos = 0;
+        else
+            sliderPos = rectHue.width - rectSlider.width;
+        updatePixelData();
+    }
+
+    function handleMouseDown(e)
+    {
+        isDragging = true;
+        updatesliderLoc(e);
+    }
+
+    function handleMouseMove(e)
+    {
+        if(isDragging)
+            updatesliderLoc(e);
+    }
+    
 </script>
 
-<div>
-    <canvas id="cy">
-        <div class="slide-bar"></div>
-    </canvas>
+<Canvas pixelData = {pixelData}/>
+<div id="hue-container">
+       
+    <canvas bind:this = {hue} id="hue" on:mousedown={handleMouseDown}  width = {canvasWidth} height = {canvasHeight}></canvas>
+    <div bind:this = {slider} id="slider" style="left:{sliderPos}px;"></div> 
 </div>
 
 <style>
-#cy{
+#hue-container{
+    position: relative;
+    display: flex;
+    align-items: center;
     width: 40rem;
-    height: 1rem;
+    height: 2rem;
+}
+#hue{
+    
+    border: 1px solid white;
 }
 
-.slide-bar{
-    height: 1rem;
-    background-color: grey;
-    width: 0.25rem;
+#slider{
+    height: 32px;
+    position: absolute;
+    background-color: black;
+    width: 4px;
+    pointer-events: none;
 }
 </style>
