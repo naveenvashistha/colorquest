@@ -49,9 +49,9 @@
         const rectSlider = slider.getBoundingClientRect();
         let new_pos = e.clientX - rectHue.left;
         
-        if(new_pos >= rectHue.left && new_pos <= rectHue.width - rectSlider.width)
+        if(new_pos >= 0 && new_pos <= rectHue.width - rectSlider.width)
             sliderPos = new_pos;
-        else if (new_pos < rectHue.left)
+        else if (new_pos < 0)
             sliderPos = 0;
         else
             sliderPos = rectHue.width - rectSlider.width;
