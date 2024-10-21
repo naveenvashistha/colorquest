@@ -82,13 +82,12 @@
 <style>
 #hue-container{
     position: relative;
-    display: flex;
     align-items: center;
     width: 40rem;
     height: 2rem;
+    margin-top: 2rem;
 }
 #hue{
-    
     border: 1px solid white;
 }
 
@@ -97,6 +96,7 @@
     position: absolute;
     background-color: black;
     width: 4px;
+    top: 0;
     pointer-events: none;
 }
 </style>
