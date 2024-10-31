@@ -1,17 +1,15 @@
 <script>
     import { onMount } from 'svelte';
     import ColorBox from './colorBox.svelte';
+    import { callApi, finalColor } from './stores';
     export let pixelData = '';
-    let canvasColorData;
     let canvas, dragger;
     let canvasHeight = 320;
-    let canvasWidth = 400;
+    let canvasWidth = 640;
     let selectedColor = '';
     let draggerPosLeft = 50, draggerPosTop = 50;
     let isDragging = false;
-    onMount(()=>{
-        updateColor();
-    });
+
     $: if(pixelData) handlePropchange();
 
     document.addEventListener("mouseup", handleMouseUp);
@@ -49,6 +47,7 @@
 
     function handleMouseUp(e){
         isDragging = false;
+        $callApi = true;
         updatePixelData();
     };
 
@@ -58,8 +57,7 @@
         const rectDragger = dragger.getBoundingClientRect();
         const x = Math.floor(draggerPosLeft + rectDragger.width/2);
         const y = Math.floor(draggerPosTop + rectDragger.height/2);
-        canvasColorData = ctx.getImageData(x, y, 1, 1).data;
-        canvasColorData = `rgb(${canvasColorData[0]}, ${canvasColorData[1]}, ${canvasColorData[2]})`;
+        $finalColor = ctx.getImageData(x, y, 1, 1).data;
     }
 
     function updatesliderLocTop(e)
@@ -81,9 +79,6 @@
         const rectCanvas = canvas.getBoundingClientRect();
         const rectDragger = dragger.getBoundingClientRect();
         let new_pos = e.clientX - rectCanvas.left;
-        console.log(rectCanvas.left);
-        console.log(new_pos);
-        console.log(rectCanvas.width);
         
         if(new_pos >= 0 && new_pos <= rectCanvas.width - rectDragger.width)
             draggerPosLeft = new_pos;
@@ -112,21 +107,12 @@
     }
 </script>
 
-<div class = "color-canvas">
-<ColorBox backgroundColor = {canvasColorData}/>
-<div style="position: relative; height:20rem; width:25rem;">
+<div style="position: relative; height:20rem; width:40rem;">
     <canvas bind:this = {canvas} id="cx" width = {canvasWidth} height = {canvasHeight} on:mousedown={handleMouseDown}></canvas>
     <div bind:this = {dragger} id="dragger" style="left:{draggerPosLeft}px; top:{draggerPosTop}px"></div> 
 </div>
-</div>
-<style>
 
-.color-canvas{
-    display: flex;
-    justify-content: space-between;
-    width: 40rem;
-    height: 20rem;
-}
+<style>
 
 #dragger{
     position: absolute;

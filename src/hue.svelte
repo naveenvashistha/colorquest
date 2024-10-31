@@ -71,14 +71,13 @@
     }
     
 </script>
-
-<Canvas pixelData = {pixelData}/>
-<div id="hue-container">
-       
-    <canvas bind:this = {hue} id="hue" on:mousedown={handleMouseDown}  width = {canvasWidth} height = {canvasHeight}></canvas>
-    <div bind:this = {slider} id="slider" style="left:{sliderPos}px;"></div> 
+<div>
+    <Canvas pixelData = {pixelData}/>
+    <div id="hue-container"> 
+        <canvas bind:this = {hue} id="hue" on:mousedown={handleMouseDown}  width = {canvasWidth} height = {canvasHeight}></canvas>
+        <div bind:this = {slider} id="slider" style="left:{sliderPos}px;"></div> 
+    </div>
 </div>
-
 <style>
 #hue-container{
     position: relative;

@@ -1,9 +1,8 @@
 <script>
-    export let backgroundColor = '';
-
+    import {finalColor} from './stores';
 </script>
 
-<div class="colorBox" style="background-color:{backgroundColor}">
+<div class="colorBox" style="background-color:{$finalColor}">
 
 </div>
 
