@@ -1,6 +1,7 @@
 <script>
     import { onMount } from 'svelte';
     import Canvas from './canvas.svelte';
+  import { callApi } from './stores';
     let slider, hue, isDragging = false, pixelData;
     let sliderPos = 0;
     let canvasWidth = 640;
@@ -31,8 +32,12 @@
     document.addEventListener("mousemove", handleMouseMove);
 
     function handleMouseUp(e){
-        isDragging = false;
-        updatePixelData();
+        if(isDragging)
+        {
+            isDragging = false;
+            $callApi = true;
+            updatesliderLoc(e);
+        }
     };
 
     function updatePixelData()
@@ -61,7 +66,6 @@
     function handleMouseDown(e)
     {
         isDragging = true;
-        updatesliderLoc(e);
     }
 
     function handleMouseMove(e)

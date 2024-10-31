@@ -1,6 +1,4 @@
 <script>
-    import { onMount } from 'svelte';
-    import ColorBox from './colorBox.svelte';
     import { callApi, finalColor } from './stores';
     export let pixelData = '';
     let canvas, dragger;
@@ -46,9 +44,14 @@
     }
 
     function handleMouseUp(e){
-        isDragging = false;
-        $callApi = true;
-        updatePixelData();
+        if(isDragging)
+        {
+            isDragging = false;
+            $callApi = true;
+            updatesliderLocLeft(e);
+            updatesliderLocTop(e);
+            updatePixelData();
+        }
     };
 
     function updatePixelData()
@@ -91,15 +94,14 @@
     function handleMouseDown(e)
     {
         isDragging = true;
-        updatesliderLocLeft(e);
-        updatesliderLocTop(e);
-        updatePixelData();
     }
 
     function handleMouseMove(e)
     {
         if(isDragging)
         {
+            console.log("mouse move");
+            
             updatesliderLocLeft(e);
             updatesliderLocTop(e);
             updatePixelData();
